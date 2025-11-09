@@ -8,10 +8,19 @@ import Link from "next/link"
 import { motion, AnimatePresence } from "framer-motion"
 import { useEffect, useState } from "react"
 import Image from "next/image"
-import { useRouter } from "next/navigation"
+
+interface Car {
+  id: number
+  name: string
+  price: number
+  monthlyPayment: number
+  apr: number
+  image: string
+  mpg: string
+  match: number
+}
 
 export default function DashboardPage() {
-  const router = useRouter()
   const [balance, setBalance] = useState(0)
   const [income, setIncome] = useState(0)
   const [spending, setSpending] = useState(0)
@@ -20,6 +29,39 @@ export default function DashboardPage() {
   const [chatMessages, setChatMessages] = useState<{ role: "user" | "assistant"; content: string }[]>([])
   const [chatInput, setChatInput] = useState("")
   const [isChatOpen, setIsChatOpen] = useState(false)
+
+  const cars: Car[] = [
+    {
+      id: 1,
+      name: "2024 Toyota Corolla Hybrid",
+      price: 26800,
+      monthlyPayment: 425,
+      apr: 5.2,
+      image: "/2024-toyota-corolla-hybrid-silver.jpg",
+      mpg: "53 city / 52 hwy",
+      match: 94,
+    },
+    {
+      id: 2,
+      name: "2024 Honda Civic",
+      price: 24500,
+      monthlyPayment: 389,
+      apr: 4.9,
+      image: "/2024-honda-civic-blue.jpg",
+      mpg: "31 city / 40 hwy",
+      match: 91,
+    },
+    {
+      id: 3,
+      name: "2024 Mazda CX-30",
+      price: 28200,
+      monthlyPayment: 447,
+      apr: 5.5,
+      image: "/2024-mazda-cx-30-red.jpg",
+      mpg: "25 city / 33 hwy",
+      match: 87,
+    },
+  ]
 
   useEffect(() => {
     const animateValue = (setter: (v: number) => void, end: number, duration: number) => {
@@ -37,10 +79,10 @@ export default function DashboardPage() {
       }, 16)
     }
 
-    animateValue(setBalance, 5230.45, 1000)
-    animateValue(setIncome, 4300, 1000)
-    animateValue(setSpending, 2600, 1000)
-    animateValue(setAvailable, 1700, 1200)
+    animateValue(setBalance, 8247.82, 1000)
+    animateValue(setIncome, 5800, 1000)
+    animateValue(setSpending, 3950, 1000)
+    animateValue(setAvailable, 1850, 1200)
   }, [])
 
   const handleSendMessage = () => {
@@ -56,7 +98,7 @@ export default function DashboardPage() {
         {
           role: "assistant",
           content:
-            "Based on your financial profile, I can see you have $1,700 available for car financing. With your monthly income of $4,300 and current spending of $2,600, I'd recommend keeping your car payment between $350-$450 per month. This ensures you maintain a healthy financial cushion. Would you like me to explain how APR affects your total payment, or would you prefer to see specific car recommendations in your budget?",
+            "Based on your financial profile, I can see you have $1,850 available for car financing. With your monthly income of $5,800 and current spending of $3,950, I'd recommend keeping your car payment between $350-$450 per month. This ensures you maintain a healthy financial cushion. Would you like me to explain how APR affects your total payment, or would you prefer to see specific car recommendations in your budget?",
         },
       ])
     }, 1000)
@@ -69,14 +111,19 @@ export default function DashboardPage() {
         <div className="mx-auto max-w-7xl px-6 py-6">
           <div className="flex items-center justify-between">
             <div>
+              <Link href="/" className="mb-2 inline-block">
+                <Image src="/kachow-logo.png" alt="Kachow" width={150} height={50} className="h-12 w-auto" />
+              </Link>
+              {/* </CHANGE> */}
               <h1 className="text-2xl font-bold">Welcome back, Alex!</h1>
               <p className="text-sm text-muted-foreground">Your bank account is securely connected.</p>
             </div>
             <div className="flex gap-3">
-              <Button variant="outline" className="gap-2 bg-transparent" onClick={() => router.push("/compare")}>
-                <BarChart3 className="h-4 w-4" />
-                Compare Cars
-              </Button>
+              <Link href="/preferences">
+                <Button variant="outline" className="gap-2 bg-transparent">
+                  Cars
+                </Button>
+              </Link>
               <Link href="/">
                 <Button variant="outline">Back to Home</Button>
               </Link>
@@ -94,7 +141,7 @@ export default function DashboardPage() {
               <div className="mb-6 flex items-center gap-3">
                 <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white overflow-hidden">
                   <Image
-                    src="/capital-one-logo.png"
+                    src="/capital-one-logo.jpg"
                     alt="Capital One"
                     width={48}
                     height={48}

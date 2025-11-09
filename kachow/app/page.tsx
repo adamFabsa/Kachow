@@ -6,6 +6,7 @@ import Link from "next/link"
 import { motion } from "framer-motion"
 import { useState } from "react"
 import { AuthDialog } from "@/components/auth-dialog"
+import Image from "next/image"
 
 export default function HomePage() {
   const [authDialogOpen, setAuthDialogOpen] = useState(false)
@@ -16,22 +17,10 @@ export default function HomePage() {
       <nav className="fixed top-0 left-0 right-0 z-50 border-b border-border/40 bg-background/80 backdrop-blur-xl">
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6">
           <Link href="/" className="flex items-center gap-2">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-[#004878] to-[#E60012]">
-              <svg className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
-              </svg>
-            </div>
-            <span className="text-xl font-bold">Kachow</span>
+            <Image src="/kachow-logo.png" alt="Kachow" width={180} height={60} className="h-14 w-auto" />
           </Link>
+          {/* </CHANGE> */}
           <div className="flex items-center gap-4">
-            <Link href="#about">
-              <Button variant="ghost">About</Button>
-            </Link>
             <Button onClick={() => setAuthDialogOpen(true)} className="bg-[#004878] hover:bg-[#003557]">
               Login
             </Button>
@@ -73,11 +62,32 @@ export default function HomePage() {
           <div className="absolute right-10 bottom-10 h-40 w-40 rounded-full bg-[#E60012]/5 blur-3xl" />
         </motion.div>
 
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3, duration: 0.8 }}
+          className="relative mx-auto mt-16 max-w-6xl px-6"
+        >
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="relative h-64 rounded-3xl overflow-hidden shadow-2xl">
+              <Image
+                src="/2024-toyota-corolla-hybrid-silver.jpg"
+                alt="Toyota Corolla Hybrid"
+                fill
+                className="object-cover"
+              />
+            </div>
+            <div className="relative h-64 rounded-3xl overflow-hidden shadow-2xl">
+              <Image src="/2024-honda-civic-blue.jpg" alt="Honda Civic" fill className="object-cover" />
+            </div>
+          </div>
+        </motion.div>
+
         {/* Feature Cards Preview */}
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4, duration: 0.8 }}
+          transition={{ delay: 0.5, duration: 0.8 }}
           className="relative mx-auto mt-20 grid max-w-6xl grid-cols-1 gap-6 px-6 md:grid-cols-3"
         >
           <div className="rounded-2xl border border-border/50 bg-card/50 p-6 backdrop-blur-sm">
@@ -110,51 +120,6 @@ export default function HomePage() {
             </p>
           </div>
         </motion.div>
-      </section>
-
-      {/* About Section */}
-      <section id="about" className="py-20">
-        <div className="mx-auto max-w-4xl px-6 text-center">
-          <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-          >
-            <h2 className="mb-6 text-4xl font-bold md:text-5xl">About Kachow</h2>
-            <p className="text-pretty text-lg leading-relaxed text-muted-foreground md:text-xl">
-              Kachow helps you find the right car for your budget by analyzing your real financial data. Our AI
-              considers your income, APR, and long-term costs — so every decision feels confident and informed. We
-              combine the trust of Capital One with the automotive precision of Toyota Financial Services to deliver
-              personalized recommendations that fit your life.
-            </p>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.3, duration: 0.8 }}
-            className="mt-16 grid grid-cols-2 gap-8 md:grid-cols-4"
-          >
-            <div>
-              <div className="mb-2 text-4xl font-bold text-[#004878]">95%</div>
-              <div className="text-sm text-muted-foreground">Accuracy Rate</div>
-            </div>
-            <div>
-              <div className="mb-2 text-4xl font-bold text-[#E60012]">$2.3k</div>
-              <div className="text-sm text-muted-foreground">Avg. Savings</div>
-            </div>
-            <div>
-              <div className="mb-2 text-4xl font-bold text-[#00A86B]">10k+</div>
-              <div className="text-sm text-muted-foreground">Happy Users</div>
-            </div>
-            <div>
-              <div className="mb-2 text-4xl font-bold text-foreground">4.9★</div>
-              <div className="text-sm text-muted-foreground">User Rating</div>
-            </div>
-          </motion.div>
-        </div>
       </section>
 
       {/* CTA Section */}

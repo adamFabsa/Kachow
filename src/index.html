@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Login Page</title>
+  </head>
+  <body>
+    <h2>Sign Up</h2>
+    
+
+      <label>Text Entry:</label>
+      <input id="test" name="test"><br><br>
+      <button onclick="testOpenAI()">Submit</button>
+
+
+
+    <script>
+        async function testOpenAI()
+        {
+            const data2 = document.getElementById('test').value;
+            const response = await fetch(`http://localhost:3000/chat?text=${encodeURIComponent(data2)}`);
+            const data = await response.json();
+        }
+
+    </script>
+  </body>
+</html>

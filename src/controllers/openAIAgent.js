@@ -19,7 +19,7 @@ async function calculate(carType)
     model: "gpt-4o-mini",
     messages: [
       { role: "system", content: "You are a helpful assistant that calculates long term car ownership costs." },
-      { role: "user", content: "Calculate the 5 year cost of owning a " + carType+ " including gas, maintenance, insurance and depreciation. Only return the range of prices" }
+      { role: "user", content: "Calculate the 5 year cost of owning a " + carType+ " including gas, maintenance, insurance and depreciation. Only return the range of prices. The output should be given as NUM_1-NUM_2" }
     ],
   });
   return response.choices[0].message.content;
@@ -32,13 +32,18 @@ exports.chat = async (req, res) => {
   try {
 
     let userInfo = {};
+    let carInfo = {};
     let messages= [
       { role: "system", content: 
-        "You are helping the user buy a car." +
-        "Step 1. Please access the user information. You may get information on the user function in the following way get_user_info():NAME_PLACEHOLDER. (Assume the user name is Tharun and use the exact same format)"+
-        "Step 2. (Skip this step for now) Based on user info recommend a car to buy. You may search for a car using the search_car():MODEL_PLACEHOLDER, BUDGET_PLACEHOLDER, PREFERENCES_PLACEHOLDER function."+
-        "Step 3. (Skip this step for now) Based on the car you recommended please give a price range for the next five years and include long term costs like gas,repairs and more. Use the function calculate():CAR_MODEL"+
-        "Step 4. Output DONE when you are finished with this process"
+       "You are an AI assistant that helps a user buy a car. Follow these rules strictly:"+
+
+       "1. Only output function calls: get_user_info(), search_car(), calculate(), DONE()."+
+       "2. To get user info, output: get_user_info():NAME"+
+       "3. To search for cars within budget, output: search_car():MONTHLY_BUDGET (Store just the number and no $ or ,)"+
+       "4. To calculate 5-year ownership cost, output: calculate():CAR_MODEL"+
+      "5. When finished, output final recommendation as: DONE:(Final recommendation here, including car model and price range)"+
+        "6. Never output explanations, apologies, extra text, or the word SUCCESS except inside the final DONE() message."+
+        "7. After receiving data from function calls, continue to the next step until DONE()."
       },
       { role: "user", content: text }
       
@@ -46,14 +51,20 @@ exports.chat = async (req, res) => {
     while(true)
     {
       const response = await openai.chat.completions.create({
-        model: "gpt-4o-mini",
+        model: "gpt-5-mini",
         messages: messages,
       });
       console.log(response.choices[0].message.content);
-      console.log(response.choices[0].message.content.split(":")[0]);
+      //console.log(response.choices[0].message.content.split(":")[0]);
 
       if(response.choices[0].message.content.includes("DONE"))
       {
+        res.status(200).json({
+          userInfo: userInfo,
+          carInfo: carInfo,
+          finalAnswer: response.choices[0].message.content.split(":")[1]
+        });
+        //console.log(response.choices[0].message.content.split(":")[1]);
         break;
       }
 
@@ -64,7 +75,7 @@ exports.chat = async (req, res) => {
           const financeDetails = await client.db('userDetails').collection('accountInfo');
           const details = await financeDetails.find({name: response.choices[0].message.content.split(":")[1]}).toArray();
           userInfo = details;
-          messages.push({ role: "assistant", content: `User Info: ${JSON.stringify(details)}` });
+          messages.push({ role: "assistant", content: `get_user_info():SUCCESS:${JSON.stringify(details)}` });
         }
         catch(err)
         {
@@ -75,13 +86,22 @@ exports.chat = async (req, res) => {
 
       else if(response.choices[0].message.content.split(":")[0] === "search_car()")
       {
-
+        try{
+          const client = await connectMongo();
+          const carDetails = await client.db('userDetails').collection('carInfo');
+          const details = await carDetails.find({monthly_payment_usd: {$lte: parseInt(response.choices[0].message.content.split(":")[1])}}).toArray();
+          carInfo = details;
+          messages.push({ role: "assistant", content: `search_car():SUCCESS:${JSON.stringify(details)}` });
+        }
+        catch(err)
+        {
+          res.status(500).json({error: 'Internal Server Error'});
+        }
       }
-
       else if(response.choices[0].message.content.split(":")[0] === "calculate()")
       {
         const calculation = await calculate(response.choices[0].message.content.split(":")[1]);
-        messages.push({ role: "assistant", content: `Calculation Result: ${JSON.stringify(calculation)}` });
+        messages.push({ role: "assistant", content: `calculate():SUCCESS:${JSON.stringify(calculation)}` });
       }
     }
    
@@ -90,7 +110,5 @@ exports.chat = async (req, res) => {
     res.status(500).send("Error chatting with AI");
   }
 };
-
-
 
 

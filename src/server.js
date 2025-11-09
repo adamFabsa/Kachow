@@ -5,13 +5,13 @@ const cors = require('cors');
 const session = require('express-session');
 
 // ======================= CONTROLLERS ======================= //
-//const AuthController = require('./controllers/AuthFile');
+const AuthController = require('./controllers/authFile');
 //const CalController = require('./controllers/CalendarFile');
 
 
 const openAIAgent = require('./controllers/openAIAgent');
 const app = express();
-const PORT = 3000;
+const PORT = 3001;
 app.use(session({
   secret: process.env.SESSION_SECRET,
   resave :false,
@@ -21,7 +21,11 @@ app.use(session({
 
 // ======================= MIDDLEWARE ======================= //
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+  origin: 'http://localhost:3000',
+  methods: ['GET', 'POST'],
+  credentials: true
+}));
 app.use(express.static("src"));
 
 // ============================ START ======================= //
@@ -32,6 +36,9 @@ app.get('/', (req, res) => {
 // ======================= NEMOTRON TEST ======================= //
 app.get('/chat', openAIAgent.chat);
 
+// ======================= AUTHENTICATION ROUTES ======================= //
+app.post('/signup', AuthController.createUser);
+app.post('/login', AuthController.loginUser);
 
 
 

@@ -1,0 +1,48 @@
+{
+  "customer": {
+    "name": "Alex",
+    "annual_income": 95000
+  },
+  "accounts": [
+    {
+      "type": "checking",
+      "balance": 2450.75
+    },
+    {
+      "type": "credit_card",
+      "balance": 1825.63,
+      "credit_limit": 15000.0
+    },
+    {
+      "type": "auto_loan",
+      "balance": 9850.45,
+      "monthly_payment": 410.55
+    }
+  ],
+  "transactions": [
+    {
+      "date": "2025-11-01",
+      "description": "PAYROLL DEPOSIT",
+      "amount": 3958.33,
+      "category": "income"
+    },
+    {
+      "date": "2025-11-02",
+      "description": "RENT PAYMENT",
+      "amount": -1850.0,
+      "category": "housing"
+    },
+    {
+      "date": "2025-11-03",
+      "description": "GROCERIES",
+      "amount": -124.87,
+      "category": "food"
+    },
+    {
+      "date": "2025-11-01",
+      "description": "AUTO LOAN PAYMENT",
+      "amount": -410.55,
+      "category": "debt"
+    }
+  ]
+}

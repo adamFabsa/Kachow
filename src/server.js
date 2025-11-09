@@ -8,7 +8,7 @@ const session = require('express-session');
 //const AuthController = require('./controllers/AuthFile');
 //const CalController = require('./controllers/CalendarFile');
 
-const grabFinanceDetails = require('./controllers/grabFinanceDetails');
+
 const openAIAgent = require('./controllers/openAIAgent');
 const app = express();
 const PORT = 3000;
@@ -32,8 +32,7 @@ app.get('/', (req, res) => {
 // ======================= NEMOTRON TEST ======================= //
 app.get('/chat', openAIAgent.chat);
 
-// ======================= FINANCE DETAILS ======================= //
-app.get('/finance-details', grabFinanceDetails.grabDetails);
+
 
 
 // ======================= MONGODB CONNECTION ======================= //
